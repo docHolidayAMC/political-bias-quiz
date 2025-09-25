@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>What is your political bias score?</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        button { margin: 10px 0; padding: 10px; }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+    <script>
+        const questions = [
+            { text: 'providing grants for patriotic education programs focusing on American history teaching', benefit: 'Enhances civic pride' },
+            { text: 'issuing orders to reshape the U.S. history narrative', benefit: 'Promotes national unity' },
+            { text: 'enhancing penalties for crimes by illegal immigrants', benefit: 'Improves public safety' },
+            { text: 'designating Antifa as a domestic terrorist organization via executive action', benefit: 'Reduces violent extremism' },
+            { text: 'withdrawing from the Paris Climate Agreement by executive order', benefit: 'Protects energy jobs' },
+            { text: 'issuing an executive order on conservation of lands and waters', benefit: 'Preserves natural resources' },
+            { text: 'policies that add 671,000 net jobs during a six-month period', benefit: 'Boosts employment opportunities' },
+            { text: 'establishing a Department of Government Efficiency (DOGE) to modernize federal technology and reduce waste', benefit: 'Saves taxpayer dollars' },
+            { text: 'granting pardons to January 6 participants', benefit: 'Fosters national reconciliation' },
+            { text: 'imposing 10% tariffs on imports', benefit: 'Supports American industries' },
+            { text: 'attracting over $1 trillion in AI investments during a six-month period', benefit: 'Drives technological innovation' },
+            { text: 'designating drug cartels as terrorist organizations', benefit: 'Reduces drug trafficking' },
+            { text: 'deploying troops to the southern border', benefit: 'Strengthens border security' },
+            { text: 'expanding offshore drilling and energy exploration in Alaska', benefit: 'Lowers energy costs' },
+            { text: 'issuing an executive order affirming two biological sexes', benefit: 'Ensures sports fairness' },
+            { text: 'directing federal workers to return to offices', benefit: 'Increases government productivity' },
+            { text: 'rescinding nearly 80 executive orders from the prior administration', benefit: 'Reduces regulatory burdens' },
+            { text: 'imposing 25% tariffs on goods from Mexico and Canada', benefit: 'Protects U.S. jobs' },
+            { text: 'ending taxpayer subsidization of benefits for illegal immigrants', benefit: 'Prioritizes citizen welfare' },
+            { text: 'issuing an order removing men from women\'s sports in schools and universities', benefit: 'Protects female athletes' },
+            { text: 'eliminating DEI initiatives in federal agencies', benefit: 'Promotes merit-based hiring' },
+            { text: 'signing legislation with tax cuts, no tax on tips/overtime, and border funding', benefit: 'Increases disposable income' },
+            { text: 'launching a Gold Card program for high-value immigrants with tax incentives', benefit: 'Attracts global talent' },
+            { text: 'inking trade agreements with the UK, China, and Indonesia', benefit: 'Expands U.S. markets' },
+            { text: 'finalizing a $14 billion sale of U.S. Steel with golden share protections', benefit: 'Safeguards national industry' },
+            { text: 'signing an order making English the official U.S. language', benefit: 'Streamlines communication' },
+            { text: 'rebranding an app to facilitate self-deportation of illegal migrants', benefit: 'Reduces enforcement costs' },
+            { text: 'achieving $160 billion in government savings through efficiency reforms during a four-month period', benefit: 'Lowers federal deficits' },
+            { text: 'issuing an order to protect U.S. nationals detained overseas', benefit: 'Enhances citizen safety' },
+            { text: 'prohibiting transgender individuals from serving in the military', benefit: 'Maintains military readiness' },
+            { text: 'restricting federal funding for gender-affirming healthcare', benefit: 'Prioritizes evidence-based medicine' },
+            { text: 'issuing orders halting government censorship of speech', benefit: 'Protects free expression' },
+            { text: 'lifting bans on migrant arrests in sensitive locations like schools and courts', benefit: 'Strengthens law enforcement' },
+            { text: 'establishing savings accounts for every newborn baby', benefit: 'Builds financial security' },
+            { text: 'allocating funding for an advanced missile defense system', benefit: 'Enhances national defense' },
+            { text: 'introducing deductions for purchasing U.S.-made cars', benefit: 'Boosts auto industry' },
+            { text: 'providing raises and funding for border agents', benefit: 'Improves border protection' },
+            { text: 'securing a strategic minerals agreement with Ukraine', benefit: 'Ensures supply chain stability' },
+            { text: 'eliminating taxes on tips and overtime pay', benefit: 'Rewards hard work' },
+            { text: 'enacting tax reductions for individuals and businesses', benefit: 'Stimulates economic growth' },
+            { text: 'implementing border security in legislation', benefit: 'Reduces illegal crossings' },
+            { text: 'signing an act slashing corporate rates to 21% and providing relief to families', benefit: 'Increases family income' },
+            { text: 'appointing justices Gorsuch, Kavanaugh, and Barrett', benefit: 'Upholds constitutional rights' },
+            { text: 'legislation encouraging legal immigration and discouraging illegal immigration', benefit: 'Streamlines immigration process' },
+            { text: 'constructing over 450 miles of border wall', benefit: 'Deters illegal immigration' },
+            { text: 'renegotiating NAFTA into USMCA', benefit: 'Creates higher-wage jobs' },
+            { text: 'achieving energy independence through domestic production', benefit: 'Reduces energy costs' },
+            { text: 'withdrawing from the Paris Climate Accord', benefit: 'Avoids costly mandates' },
+            { text: 'launching Operation Warp Speed for COVID-19 vaccines', benefit: 'Accelerates health solutions' },
+            { text: 'signing the First Step Act for criminal justice reform', benefit: 'Reduces recidivism rates' },
+            { text: 'defeating the ISIS caliphate', benefit: 'Eliminates terror threats' },
+            { text: 'brokering the Abraham Accords for Middle East peace', benefit: 'Stabilizes global markets' },
+            { text: 'cutting 22 regulations per new one', benefit: 'Frees business growth' },
+            { text: 'creating Space Force', benefit: 'Secures satellite communications' },
+            { text: 'investing $2 trillion in military rebuild', benefit: 'Strengthens national security' },
+            { text: 'freeing over 20 American hostages abroad', benefit: 'Safeguards U.S. citizens' },
+            { text: 'lowering drug prices through executive actions', benefit: 'Reduces healthcare costs' },
+            { text: 'expanding the veterans\' choice program', benefit: 'Improves veteran care' },
+            { text: 'protecting religious liberty through executive orders', benefit: 'Supports faith communities' },
+            { text: 'promoting school choice', benefit: 'Enhances education quality' }
+        ];
+
+        let answers = new Array(60).fill(null);
+        let currentQuestion = -1;
+
+        function render() {
+            const app = document.getElementById('app');
+            if (currentQuestion === -1) {
+                app.innerHTML = `
+                    <h1>What is your political bias score?</h1>
+                    <div id="intro">
+                        <p>This quiz has 60 questions. Each question will appear on a separate page. Click "Next" after selecting your answer.</p>
+                        <button onclick="startQuiz()">Start Quiz</button>
+                    </div>
+                `;
+            } else if (currentQuestion < 60) {
+                app.innerHTML = `
+                    <h1>What is your political bias score?</h1>
+                    <div id="quiz">
+                        <p>${currentQuestion + 1}. Would you vote for ${questions[currentQuestion].text}? (${questions[currentQuestion].benefit})</p>
+                        <label><input type="radio" name="answer" value="for"> For</label><br>
+                        <label><input type="radio" name="answer" value="against"> Against</label><br>
+                        <button onclick="nextQuestion()">Next</button>
+                    </div>
+                `;
+            } else {
+                const forCount = answers.filter(a => a === 'for').length;
+                const percentage = Math.round((forCount / 60) * 100);
+                app.innerHTML = `
+                    <h1>What is your political bias score?</h1>
+                    <div id="result">
+                        You agree with ${percentage}% of President Trump's achievements in his first and second term so far.
+                    </div>
+                `;
+            }
+        }
+
+        function startQuiz() {
+            currentQuestion = 0;
+            render();
+        }
+
+        function nextQuestion() {
+            const selected = document.querySelector('input[name="answer"]:checked');
+            if (!selected) return alert('Please select an option.');
+            answers[currentQuestion] = selected.value;
+            currentQuestion++;
+            render();
+        }
+
+        render();
+    </script>
+</body>
+</html>
