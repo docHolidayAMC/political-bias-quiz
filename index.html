@@ -4,8 +4,11 @@
     <meta charset="UTF-8">
     <title>What is your political bias score?</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: black; }
         button { margin: 10px 0; padding: 10px; }
+        input[type="text"], input[type="email"] { margin: 5px; padding: 5px; width: 200px; }
+        #quiz { padding: 20px; border-radius: 5px; }
+        .summary { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -76,6 +79,12 @@
 
         let answers = new Array(60).fill(null);
         let currentQuestion = -1;
+        let userInfo = { firstName: '', lastName: '', email: '' };
+
+        function getRandomColor() {
+            const colors = ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A', '#31A2AC', '#61C0BF', '#6B728E', '#FFECB3'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
 
         function render() {
             const app = document.getElementById('app');
@@ -83,14 +92,17 @@
                 app.innerHTML = `
                     <h1>What is your political bias score?</h1>
                     <div id="intro">
-                        <p>This quiz has 60 questions. Each question will appear on a separate page. Click "Next" after selecting your answer.</p>
+                        <p>This quiz has 60 questions. Each question will appear on a separate page. Please enter your details to start.</p>
+                        <p><label>First Name: <input type="text" id="firstName" required></label></p>
+                        <p><label>Last Name: <input type="text" id="lastName" required></label></p>
+                        <p><label>Email: <input type="email" id="email" required></label></p>
                         <button onclick="startQuiz()">Start Quiz</button>
                     </div>
                 `;
             } else if (currentQuestion < 60) {
                 app.innerHTML = `
                     <h1>What is your political bias score?</h1>
-                    <div id="quiz">
+                    <div id="quiz" style="background-color: ${getRandomColor()}">
                         <p>${currentQuestion + 1}. Would you vote for ${questions[currentQuestion].text}? (${questions[currentQuestion].benefit})</p>
                         <label><input type="radio" name="answer" value="for"> For</label><br>
                         <label><input type="radio" name="answer" value="against"> Against</label><br>
@@ -100,16 +112,26 @@
             } else {
                 const forCount = answers.filter(a => a === 'for').length;
                 const percentage = Math.round((forCount / 60) * 100);
+                const agreedQuestions = questions
+                    .map((q, i) => answers[i] === 'for' ? `${i + 1}. ${q.text} (${q.benefit})` : null)
+                    .filter(Boolean)
+                    .join('<br>');
                 app.innerHTML = `
                     <h1>What is your political bias score?</h1>
                     <div id="result">
-                        You agree with ${percentage}% of President Trump's achievements in his first and second term so far.
+                        <p>You agree with ${percentage}% of President Trump's achievements in his first and second term so far.</p>
+                        <p class="summary"><strong>Questions you agreed with:</strong><br>${agreedQuestions || 'None'}</p>
                     </div>
                 `;
             }
         }
 
         function startQuiz() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            if (!firstName || !lastName || !email) return alert('Please fill in all fields.');
+            userInfo = { firstName, lastName, email };
             currentQuestion = 0;
             render();
         }
