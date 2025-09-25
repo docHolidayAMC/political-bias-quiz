@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>What is your political bias score?</title>
     <style>
         body { 
@@ -10,108 +11,399 @@
             margin: 0 auto; 
             padding: 20px; 
             color: black; 
-            font-size: 2.5rem; 
+            font-size: 2rem; 
             line-height: 1.4; 
         }
-        #app { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; }
+        #app { 
+            min-height: 80vh; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+        }
         button { 
-            font-size: 2rem; 
+            font-size: 1.5rem; 
             margin: 20px 0; 
             padding: 15px; 
             cursor: pointer; 
+            width: 100%; 
+            max-width: 300px; 
         }
-        input[type="text"], input[type="email"] { 
-            font-size: 2rem; 
+        input[type="email"] { 
+            font-size: 1.5rem; 
             margin: 10px; 
             padding: 10px; 
-            width: 80%; 
+            width: calc(100% - 20px); 
             max-width: 500px; 
         }
         input[type="radio"] { 
-            transform: scale(2); 
+            transform: scale(1.5); 
             margin-right: 15px; 
         }
         #quiz { 
-            padding: 30px; 
+            padding: 20px; 
             border-radius: 10px; 
         }
         .summary { 
             margin-top: 20px; 
+            font-size: 1.5rem; 
+        }
+        label { 
             font-size: 2rem; 
         }
-        label { font-size: 2.5rem; }
-        p { margin: 20px 0; }
+        p { 
+            margin: 15px 0; 
+        }
+        @media (max-width: 600px) {
+            body { 
+                font-size: 1.5rem; 
+            }
+            button, input[type="email"], label { 
+                font-size: 1.2rem; 
+            }
+            input[type="radio"] { 
+                transform: scale(1.2); 
+            }
+            #quiz { 
+                padding: 15px; 
+            }
+            .summary { 
+                font-size: 1.2rem; 
+            }
+        }
     </style>
 </head>
 <body>
     <div id="app"></div>
     <script>
         const questions = [
-            { text: 'providing grants for patriotic education programs focusing on American history teaching', benefit: 'Enhances civic pride' },
-            { text: 'issuing orders to reshape the U.S. history narrative', benefit: 'Promotes national unity' },
-            { text: 'enhancing penalties for crimes by illegal immigrants', benefit: 'Improves public safety' },
-            { text: 'designating Antifa as a domestic terrorist organization via executive action', benefit: 'Reduces violent extremism' },
-            { text: 'withdrawing from the Paris Climate Agreement by executive order', benefit: 'Protects energy jobs' },
-            { text: 'issuing an executive order on conservation of lands and waters', benefit: 'Preserves natural resources' },
-            { text: 'policies that add 671,000 net jobs during a six-month period', benefit: 'Boosts employment opportunities' },
-            { text: 'establishing a Department of Government Efficiency (DOGE) to modernize federal technology and reduce waste', benefit: 'Saves taxpayer dollars' },
-            { text: 'granting pardons to January 6 participants', benefit: 'Fosters national reconciliation' },
-            { text: 'imposing 10% tariffs on imports', benefit: 'Supports American industries' },
-            { text: 'attracting over $1 trillion in AI investments during a six-month period', benefit: 'Drives technological innovation' },
-            { text: 'designating drug cartels as terrorist organizations', benefit: 'Reduces drug trafficking' },
-            { text: 'deploying troops to the southern border', benefit: 'Strengthens border security' },
-            { text: 'expanding offshore drilling and energy exploration in Alaska', benefit: 'Lowers energy costs' },
-            { text: 'issuing an executive order affirming two biological sexes', benefit: 'Ensures sports fairness' },
-            { text: 'directing federal workers to return to offices', benefit: 'Increases government productivity' },
-            { text: 'rescinding nearly 80 executive orders from the prior administration', benefit: 'Reduces regulatory burdens' },
-            { text: 'imposing 25% tariffs on goods from Mexico and Canada', benefit: 'Protects U.S. jobs' },
-            { text: 'ending taxpayer subsidization of benefits for illegal immigrants', benefit: 'Prioritizes citizen welfare' },
-            { text: 'issuing an order removing men from women\'s sports in schools and universities', benefit: 'Protects female athletes' },
-            { text: 'eliminating DEI initiatives in federal agencies', benefit: 'Promotes merit-based hiring' },
-            { text: 'signing legislation with tax cuts, no tax on tips/overtime, and border funding', benefit: 'Increases disposable income' },
-            { text: 'launching a Gold Card program for high-value immigrants with tax incentives', benefit: 'Attracts global talent' },
-            { text: 'inking trade agreements with the UK, China, and Indonesia', benefit: 'Expands U.S. markets' },
-            { text: 'finalizing a $14 billion sale of U.S. Steel with golden share protections', benefit: 'Safeguards national industry' },
-            { text: 'signing an order making English the official U.S. language', benefit: 'Streamlines communication' },
-            { text: 'rebranding an app to facilitate self-deportation of illegal migrants', benefit: 'Reduces enforcement costs' },
-            { text: 'achieving $160 billion in government savings through efficiency reforms during a four-month period', benefit: 'Lowers federal deficits' },
-            { text: 'issuing an order to protect U.S. nationals detained overseas', benefit: 'Enhances citizen safety' },
-            { text: 'prohibiting transgender individuals from serving in the military', benefit: 'Maintains military readiness' },
-            { text: 'restricting federal funding for gender-affirming healthcare', benefit: 'Prioritizes evidence-based medicine' },
-            { text: 'issuing orders halting government censorship of speech', benefit: 'Protects free expression' },
-            { text: 'lifting bans on migrant arrests in sensitive locations like schools and courts', benefit: 'Strengthens law enforcement' },
-            { text: 'establishing savings accounts for every newborn baby', benefit: 'Builds financial security' },
-            { text: 'allocating funding for an advanced missile defense system', benefit: 'Enhances national defense' },
-            { text: 'introducing deductions for purchasing U.S.-made cars', benefit: 'Boosts auto industry' },
-            { text: 'providing raises and funding for border agents', benefit: 'Improves border protection' },
-            { text: 'securing a strategic minerals agreement with Ukraine', benefit: 'Ensures supply chain stability' },
-            { text: 'eliminating taxes on tips and overtime pay', benefit: 'Rewards hard work' },
-            { text: 'enacting tax reductions for individuals and businesses', benefit: 'Stimulates economic growth' },
-            { text: 'implementing border security in legislation', benefit: 'Reduces illegal crossings' },
-            { text: 'signing an act slashing corporate rates to 21% and providing relief to families', benefit: 'Increases family income' },
-            { text: 'appointing justices Gorsuch, Kavanaugh, and Barrett', benefit: 'Upholds constitutional rights' },
-            { text: 'legislation encouraging legal immigration and discouraging illegal immigration', benefit: 'Streamlines immigration process' },
-            { text: 'constructing over 450 miles of border wall', benefit: 'Deters illegal immigration' },
-            { text: 'renegotiating NAFTA into USMCA', benefit: 'Creates higher-wage jobs' },
-            { text: 'achieving energy independence through domestic production', benefit: 'Reduces energy costs' },
-            { text: 'withdrawing from the Paris Climate Accord', benefit: 'Avoids costly mandates' },
-            { text: 'launching Operation Warp Speed for COVID-19 vaccines', benefit: 'Accelerates health solutions' },
-            { text: 'signing the First Step Act for criminal justice reform', benefit: 'Reduces recidivism rates' },
-            { text: 'defeating the ISIS caliphate', benefit: 'Eliminates terror threats' },
-            { text: 'brokering the Abraham Accords for Middle East peace', benefit: 'Stabilizes global markets' },
-            { text: 'cutting 22 regulations per new one', benefit: 'Frees business growth' },
-            { text: 'creating Space Force', benefit: 'Secures satellite communications' },
-            { text: 'investing $2 trillion in military rebuild', benefit: 'Strengthens national security' },
-            { text: 'freeing over 20 American hostages abroad', benefit: 'Safeguards U.S. citizens' },
-            { text: 'lowering drug prices through executive actions', benefit: 'Reduces healthcare costs' },
-            { text: 'expanding the veterans\' choice program', benefit: 'Improves veteran care' },
-            { text: 'protecting religious liberty through executive orders', benefit: 'Supports faith communities' },
-            { text: 'promoting school choice', benefit: 'Enhances education quality' }
+            { 
+                text: 'providing grants for patriotic education programs focusing on American history teaching', 
+                benefit: 'Enhances civic pride', 
+                intentionBenefit: 'The intention is to fund programs that teach American history to foster national pride, benefiting people by strengthening shared identity and civic engagement.', 
+                whyImplemented: 'This would be implemented to address perceived gaps in history education from previous curricula that may have emphasized division over unity.' 
+            },
+            { 
+                text: 'issuing orders to reshape the U.S. history narrative', 
+                benefit: 'Promotes national unity', 
+                intentionBenefit: 'The intention is to promote a unifying historical perspective, benefiting Americans by fostering resilience and cultural cohesion.', 
+                whyImplemented: 'This would be implemented to counter previous narratives seen as divisive, aiming for a more positive national story.' 
+            },
+            { 
+                text: 'enhancing penalties for crimes by illegal immigrants', 
+                benefit: 'Improves public safety', 
+                intentionBenefit: 'The intention is to increase penalties for crimes by undocumented individuals, benefiting Americans by deterring illegal entry and protecting communities.', 
+                whyImplemented: 'This would be implemented to address perceived leniency in prior enforcement, enhancing justice and security.' 
+            },
+            { 
+                text: 'designating Antifa as a domestic terrorist organization via executive action', 
+                benefit: 'Reduces violent extremism', 
+                intentionBenefit: 'The intention is to classify Antifa as terrorists, benefiting people by targeting extremism and promoting law and order.', 
+                whyImplemented: 'This would be implemented due to past incidents of violence not adequately addressed in previous classifications.' 
+            },
+            { 
+                text: 'withdrawing from the Paris Climate Agreement by executive order', 
+                benefit: 'Protects energy jobs', 
+                intentionBenefit: 'The intention is to exit the Paris Agreement, benefiting Americans by preserving jobs and avoiding high costs.', 
+                whyImplemented: 'This would be implemented to reverse prior participation seen as burdensome on the economy.' 
+            },
+            { 
+                text: 'issuing an executive order on conservation of lands and waters', 
+                benefit: 'Preserves natural resources', 
+                intentionBenefit: 'The intention is to prioritize conservation, benefiting people by supporting recreation and environmental quality.', 
+                whyImplemented: 'This would be implemented to balance previous focuses on development with stronger resource stewardship.' 
+            },
+            { 
+                text: 'policies that add 671,000 net jobs during a six-month period', 
+                benefit: 'Boosts employment opportunities', 
+                intentionBenefit: 'The intention is to enact policies creating jobs, benefiting Americans by reducing unemployment and boosting prosperity.', 
+                whyImplemented: 'This would be implemented to accelerate recovery from prior economic slowdowns.' 
+            },
+            { 
+                text: 'establishing a Department of Government Efficiency (DOGE) to modernize federal technology and reduce waste', 
+                benefit: 'Saves taxpayer dollars', 
+                intentionBenefit: 'The intention is to create DOGE for efficiency, benefiting people by improving services and cutting costs.', 
+                whyImplemented: 'This would be implemented to tackle longstanding bureaucratic inefficiencies not addressed before.' 
+            },
+            { 
+                text: 'granting pardons to January 6 participants', 
+                benefit: 'Fosters national reconciliation', 
+                intentionBenefit: 'The intention is to pardon January 6 individuals, benefiting Americans by promoting unity and due process.', 
+                whyImplemented: 'This would be implemented to heal divisions from previous legal pursuits seen as politically motivated.' 
+            },
+            { 
+                text: 'imposing 10% tariffs on imports', 
+                benefit: 'Supports American industries', 
+                intentionBenefit: 'The intention is to apply tariffs on imports, benefiting people by protecting jobs and generating revenue.', 
+                whyImplemented: 'This would be implemented to counter unfair trade practices more aggressively than in the past.' 
+            },
+            { 
+                text: 'attracting over $1 trillion in AI investments during a six-month period', 
+                benefit: 'Drives technological innovation', 
+                intentionBenefit: 'The intention is to attract AI investments, benefiting Americans by creating jobs and advancing technology.', 
+                whyImplemented: 'This would be implemented to lead in AI amid previous lags in global competition.' 
+            },
+            { 
+                text: 'designating drug cartels as terrorist organizations', 
+                benefit: 'Reduces drug trafficking', 
+                intentionBenefit: 'The intention is to label cartels as terrorists, benefiting people by intensifying crackdowns and saving lives.', 
+                whyImplemented: 'This would be implemented to escalate responses to drug crises beyond prior approaches.' 
+            },
+            { 
+                text: 'deploying troops to the southern border', 
+                benefit: 'Strengthens border security', 
+                intentionBenefit: 'The intention is to send troops to the border, benefiting Americans by reducing crossings and enhancing safety.', 
+                whyImplemented: 'This would be implemented to address surges in migration not controlled under previous policies.' 
+            },
+            { 
+                text: 'expanding offshore drilling and energy exploration in Alaska', 
+                benefit: 'Lowers energy costs', 
+                intentionBenefit: 'The intention is to increase drilling, benefiting people by boosting production and lowering fuel prices.', 
+                whyImplemented: 'This would be implemented to reverse restrictions from prior environmental focuses.' 
+            },
+            { 
+                text: 'issuing an executive order affirming two biological sexes', 
+                benefit: 'Ensures sports fairness', 
+                intentionBenefit: 'The intention is to affirm two sexes, benefiting Americans by protecting fairness in sports and facilities.', 
+                whyImplemented: 'This would be implemented to clarify policies amid previous debates on gender definitions.' 
+            },
+            { 
+                text: 'directing federal workers to return to offices', 
+                benefit: 'Increases government productivity', 
+                intentionBenefit: 'The intention is to end remote work, benefiting people by improving government efficiency and services.', 
+                whyImplemented: 'This would be implemented to counter productivity drops from prior pandemic-era remote mandates.' 
+            },
+            { 
+                text: 'rescinding nearly 80 executive orders from the prior administration', 
+                benefit: 'Reduces regulatory burdens', 
+                intentionBenefit: 'The intention is to revoke orders, benefiting Americans by eliminating burdens and promoting freedom.', 
+                whyImplemented: 'This would be implemented to undo policies seen as overreaching from the previous term.' 
+            },
+            { 
+                text: 'imposing 25% tariffs on goods from Mexico and Canada', 
+                benefit: 'Protects U.S. jobs', 
+                intentionBenefit: 'The intention is to tariff goods from Mexico and Canada, benefiting people by enforcing cooperation and reducing deficits.', 
+                whyImplemented: 'This would be implemented to pressure for better deals amid prior trade imbalances.' 
+            },
+            { 
+                text: 'ending taxpayer subsidization of benefits for illegal immigrants', 
+                benefit: 'Prioritizes citizen welfare', 
+                intentionBenefit: 'The intention is to stop benefits for undocumented, benefiting Americans by redirecting funds to citizens.', 
+                whyImplemented: 'This would be implemented to address strain on resources from previous inclusive policies.' 
+            },
+            { 
+                text: 'issuing an order removing men from women\'s sports in schools and universities', 
+                benefit: 'Protects female athletes', 
+                intentionBenefit: 'The intention is to bar men from women\'s sports, benefiting Americans by ensuring fair competition for females.', 
+                whyImplemented: 'This would be implemented to resolve controversies from prior gender inclusion rules.' 
+            },
+            { 
+                text: 'eliminating DEI initiatives in federal agencies', 
+                benefit: 'Promotes merit-based hiring', 
+                intentionBenefit: 'The intention is to end DEI programs, benefiting people by focusing on merit and unbiased services.', 
+                whyImplemented: 'This would be implemented to shift from previous emphasis on diversity quotas seen as divisive.' 
+            },
+            { 
+                text: 'signing legislation with tax cuts, no tax on tips/overtime, and border funding', 
+                benefit: 'Increases disposable income', 
+                intentionBenefit: 'The intention is to pass tax cuts and border funding, benefiting Americans by boosting pay and security.', 
+                whyImplemented: 'This would be implemented to stimulate growth and secure borders beyond prior fiscal approaches.' 
+            },
+            { 
+                text: 'launching a Gold Card program for high-value immigrants with tax incentives', 
+                benefit: 'Attracts global talent', 
+                intentionBenefit: 'The intention is to create a visa for skilled immigrants, benefiting people by driving innovation and jobs.', 
+                whyImplemented: 'This would be implemented to compete for talent amid previous restrictive immigration systems.' 
+            },
+            { 
+                text: 'inking trade agreements with the UK, China, and Indonesia', 
+                benefit: 'Expands U.S. markets', 
+                intentionBenefit: 'The intention is to secure trade deals, benefiting Americans by opening markets and lowering prices.', 
+                whyImplemented: 'This would be implemented to fill gaps in prior agreements affected by global tensions.' 
+            },
+            { 
+                text: 'finalizing a $14 billion sale of U.S. Steel with golden share protections', 
+                benefit: 'Safeguards national industry', 
+                intentionBenefit: 'The intention is to sell U.S. Steel with protections, benefiting people by funding infrastructure while securing production.', 
+                whyImplemented: 'This would be implemented to modernize industry unlike previous ownership models.' 
+            },
+            { 
+                text: 'signing an order making English the official U.S. language', 
+                benefit: 'Streamlines communication', 
+                intentionBenefit: 'The intention is to officialize English, benefiting Americans by promoting unity and efficient government.', 
+                whyImplemented: 'This would be implemented to standardize communications amid growing linguistic diversity.' 
+            },
+            { 
+                text: 'rebranding an app to facilitate self-deportation of illegal migrants', 
+                benefit: 'Reduces enforcement costs', 
+                intentionBenefit: 'The intention is to aid self-deportation, benefiting people by saving costs and upholding laws.', 
+                whyImplemented: 'This would be implemented to encourage voluntary compliance over prior costly deportations.' 
+            },
+            { 
+                text: 'achieving $160 billion in government savings through efficiency reforms during a four-month period', 
+                benefit: 'Lowers federal deficits', 
+                intentionBenefit: 'The intention is to save through reforms, benefiting Americans by reducing deficits and taxes.', 
+                whyImplemented: 'This would be implemented to cut waste faster than in previous slow bureaucratic changes.' 
+            },
+            { 
+                text: 'issuing an order to protect U.S. nationals detained overseas', 
+                benefit: 'Enhances citizen safety', 
+                intentionBenefit: 'The intention is to bolster protections abroad, benefiting Americans by ensuring swift returns and safety.', 
+                whyImplemented: 'This would be implemented to strengthen diplomacy amid past detention incidents.' 
+            },
+            { 
+                text: 'prohibiting transgender individuals from serving in the military', 
+                benefit: 'Maintains military readiness', 
+                intentionBenefit: 'The intention is to ban transgender service, benefiting Americans by focusing on defense unity.', 
+                whyImplemented: 'This would be implemented to reverse previous inclusive policies seen as distracting.' 
+            },
+            { 
+                text: 'restricting federal funding for gender-affirming healthcare', 
+                benefit: 'Prioritizes evidence-based medicine', 
+                intentionBenefit: 'The intention is to limit funding, benefiting people by allocating to proven health needs.', 
+                whyImplemented: 'This would be implemented to question prior expansions amid debates on efficacy.' 
+            },
+            { 
+                text: 'issuing orders halting government censorship of speech', 
+                benefit: 'Protects free expression', 
+                intentionBenefit: 'The intention is to stop censorship, benefiting Americans by empowering diverse voices.', 
+                whyImplemented: 'This would be implemented to counter alleged prior government influences on speech.' 
+            },
+            { 
+                text: 'lifting bans on migrant arrests in sensitive locations like schools and courts', 
+                benefit: 'Strengthens law enforcement', 
+                intentionBenefit: 'The intention is to allow arrests in protected areas, benefiting people by deterring crime.', 
+                whyImplemented: 'This would be implemented to enhance enforcement beyond previous sanctuary restrictions.' 
+            },
+            { 
+                text: 'establishing savings accounts for every newborn baby', 
+                benefit: 'Builds financial security', 
+                intentionBenefit: 'The intention is to create newborn accounts, benefiting Americans by promoting long-term security.', 
+                whyImplemented: 'This would be implemented to encourage family growth unlike prior lacking incentives.' 
+            },
+            { 
+                text: 'allocating funding for an advanced missile defense system', 
+                benefit: 'Enhances national defense', 
+                intentionBenefit: 'The intention is to fund missile defense, benefiting people by protecting against threats.', 
+                whyImplemented: 'This would be implemented to advance defenses amid evolving global risks.' 
+            },
+            { 
+                text: 'introducing deductions for purchasing U.S.-made cars', 
+                benefit: 'Boosts auto industry', 
+                intentionBenefit: 'The intention is to offer car deductions, benefiting Americans by supporting manufacturing jobs.', 
+                whyImplemented: 'This would be implemented to incentivize domestic buying over prior import preferences.' 
+            },
+            { 
+                text: 'providing raises and funding for border agents', 
+                benefit: 'Improves border protection', 
+                intentionBenefit: 'The intention is to raise pay for agents, benefiting people by strengthening enforcement.', 
+                whyImplemented: 'This would be implemented to boost morale amid previous staffing shortages.' 
+            },
+            { 
+                text: 'securing a strategic minerals agreement with Ukraine', 
+                benefit: 'Ensures supply chain stability', 
+                intentionBenefit: 'The intention is to secure minerals, benefiting Americans by stabilizing tech and defense supplies.', 
+                whyImplemented: 'This would be implemented to reduce dependence on adversaries unlike prior vulnerabilities.' 
+            },
+            { 
+                text: 'eliminating taxes on tips and overtime pay', 
+                benefit: 'Rewards hard work', 
+                intentionBenefit: 'The intention is to exempt tips and overtime from taxes, benefiting workers by increasing income.', 
+                whyImplemented: 'This would be implemented to support service industries hit by prior tax burdens.' 
+            },
+            { 
+                text: 'enacting tax reductions for individuals and businesses', 
+                benefit: 'Stimulates economic growth', 
+                intentionBenefit: 'The intention is to cut taxes, benefiting Americans by spurring investment and opportunity.', 
+                whyImplemented: 'This would be implemented to boost recovery from previous high-tax environments.' 
+            },
+            { 
+                text: 'implementing border security in legislation', 
+                benefit: 'Reduces illegal crossings', 
+                intentionBenefit: 'The intention is to legislate border measures, benefiting people by combating trafficking.', 
+                whyImplemented: 'This would be implemented to enforce laws more robustly than in prior lax periods.' 
+            },
+            { 
+                text: 'signing an act slashing corporate rates to 21% and providing relief to families', 
+                benefit: 'Increases family income', 
+                intentionBenefit: 'The intention is to lower corporate taxes and aid families, benefiting Americans by boosting wages.', 
+                whyImplemented: 'This would be implemented to make the U.S. competitive after higher prior rates.' 
+            },
+            { 
+                text: 'appointing justices Gorsuch, Kavanaugh, and Barrett', 
+                benefit: 'Upholds constitutional rights', 
+                intentionBenefit: 'The intention is to appoint conservative justices, benefiting people by protecting rights like speech.', 
+                whyImplemented: 'This would be implemented to shift the court balance from previous liberal leanings.' 
+            },
+            { 
+                text: 'legislation encouraging legal immigration and discouraging illegal immigration', 
+                benefit: 'Streamlines immigration process', 
+                intentionBenefit: 'The intention is to promote legal paths while deterring illegal ones, benefiting Americans by ensuring orderly immigration.', 
+                whyImplemented: 'This would be implemented to fix backlogs and chaos from prior mixed policies.' 
+            },
+            { 
+                text: 'constructing over 450 miles of border wall', 
+                benefit: 'Deters illegal immigration', 
+                intentionBenefit: 'The intention is to build border walls, benefiting people by reducing trafficking and saving lives.', 
+                whyImplemented: 'This would be implemented to address vulnerabilities not fortified in the past.' 
+            },
+            { 
+                text: 'renegotiating NAFTA into USMCA', 
+                benefit: 'Creates higher-wage jobs', 
+                intentionBenefit: 'The intention is to update NAFTA to USMCA, benefiting Americans by protecting workers and boosting exports.', 
+                whyImplemented: 'This would be implemented to fix outdated terms from the original agreement.' 
+            },
+            { 
+                text: 'cutting burdensome regulations to help foster business growth', 
+                benefit: 'Frees business growth', 
+                intentionBenefit: 'The intention is to deregulate heavily, benefiting Americans by saving costs and creating jobs.', 
+                whyImplemented: 'This would be implemented to roll back accumulations from decades of increasing regulations.' 
+            },
+            { 
+                text: 'creating Space Force', 
+                benefit: 'Secures satellite communications', 
+                intentionBenefit: 'The intention is to establish Space Force, benefiting people by protecting communications and data.', 
+                whyImplemented: 'This would be implemented to address emerging space threats not covered in prior military structures.' 
+            },
+            { 
+                text: 'investing $2 trillion in military rebuild', 
+                benefit: 'Strengthens national security', 
+                intentionBenefit: 'The intention is to modernize the military, benefiting Americans by deterring threats and ensuring safety.', 
+                whyImplemented: 'This would be implemented to reverse underfunding from previous budget constraints.' 
+            },
+            { 
+                text: 'freeing over 20 American hostages abroad', 
+                benefit: 'Safeguards U.S. citizens', 
+                intentionBenefit: 'The intention is to secure hostage releases, benefiting families by bringing loved ones home safely.', 
+                whyImplemented: 'This would be implemented through diplomacy to succeed where prior negotiations stalled.' 
+            },
+            { 
+                text: 'lowering drug prices through executive actions', 
+                benefit: 'Reduces healthcare costs', 
+                intentionBenefit: 'The intention is to reduce drug costs, benefiting Americans by making prescriptions more affordable.', 
+                whyImplemented: 'This would be implemented to tackle high prices not controlled under previous regulations.' 
+            },
+            { 
+                text: 'expanding the veterans\' choice program', 
+                benefit: 'Improves veteran care', 
+                intentionBenefit: 'The intention is to broaden veterans\' healthcare options, benefiting them by reducing wait times.', 
+                whyImplemented: 'This would be implemented to fix delays in prior VA-only systems.' 
+            },
+            { 
+                text: 'protecting religious liberty through executive orders', 
+                benefit: 'Supports faith communities', 
+                intentionBenefit: 'The intention is to safeguard religious practices, benefiting Americans by ensuring faith-based services continue.', 
+                whyImplemented: 'This would be implemented to counter perceived erosions from previous secular policies.' 
+            },
+            { 
+                text: 'promoting school choice', 
+                benefit: 'Enhances education quality', 
+                intentionBenefit: 'The intention is to expand school options, benefiting families by improving education access and quality.', 
+                whyImplemented: 'This would be implemented to empower parents beyond traditional public school assignments.' 
+            }
         ];
 
         let answers = new Array(60).fill(null);
         let currentQuestion = -1;
-        let userInfo = { firstName: '', lastName: '', email: '' };
 
         function getBackgroundColor(index) {
             return index % 2 === 0 ? '#ADD8E6' : '#90EE90';
@@ -123,10 +415,7 @@
                 app.innerHTML = `
                     <h1>What is your political bias score?</h1>
                     <div id="intro">
-                        <p>This quiz has 60 questions. Each question will appear on a separate page. Please enter your details to start.</p>
-                        <p><label>First Name: <input type="text" id="firstName" required></label></p>
-                        <p><label>Last Name: <input type="text" id="lastName" required></label></p>
-                        <p><label>Email: <input type="email" id="email" required></label></p>
+                        <p>This quiz has 60 questions. Each question will appear on a separate page. Click "Start" to begin.</p>
                         <button onclick="startQuiz()">Start Quiz</button>
                     </div>
                 `;
@@ -135,14 +424,18 @@
                     <h1>What is your political bias score?</h1>
                     <div id="quiz" style="background-color: ${getBackgroundColor(currentQuestion)}">
                         <p>${currentQuestion + 1}. Would you vote for ${questions[currentQuestion].text}? (${questions[currentQuestion].benefit})</p>
+                        <p>${questions[currentQuestion].intentionBenefit}</p>
+                        <p>${questions[currentQuestion].whyImplemented}</p>
                         <label><input type="radio" name="answer" value="for"> For</label><br>
                         <label><input type="radio" name="answer" value="against"> Against</label><br>
+                        <label><input type="radio" name="answer" value="dontknow" checked> I don\'t know</label><br>
                         <button onclick="nextQuestion()">Next</button>
                     </div>
                 `;
             } else {
                 const forCount = answers.filter(a => a === 'for').length;
-                const percentage = Math.round((forCount / 60) * 100);
+                const decidedCount = answers.filter(a => a === 'for' || a === 'against').length;
+                const percentage = decidedCount > 0 ? Math.round((forCount / decidedCount) * 100) : 0;
                 const agreedQuestions = questions
                     .map((q, i) => answers[i] === 'for' ? `${i + 1}. ${q.text} (${q.benefit})` : null)
                     .filter(Boolean)
@@ -152,17 +445,15 @@
                     <div id="result">
                         <p>You agree with ${percentage}% of President Trump's achievements in his first and second term so far.</p>
                         <p class="summary"><strong>Questions you agreed with:</strong><br>${agreedQuestions || 'None'}</p>
+                        <button onclick="window.print()">Print Results</button>
+                        <p><label>Email Results: <input type="email" id="email" placeholder="Enter your email"></label></p>
+                        <button onclick="sendEmail()">Send Email</button>
                     </div>
                 `;
             }
         }
 
         function startQuiz() {
-            const firstName = document.getElementById('firstName').value;
-            const lastName = document.getElementById('lastName').value;
-            const email = document.getElementById('email').value;
-            if (!firstName || !lastName || !email) return alert('Please fill in all fields.');
-            userInfo = { firstName, lastName, email };
             currentQuestion = 0;
             render();
         }
@@ -173,6 +464,21 @@
             answers[currentQuestion] = selected.value;
             currentQuestion++;
             render();
+        }
+
+        function sendEmail() {
+            const email = document.getElementById('email').value;
+            if (!email) return alert('Please enter an email address.');
+            const forCount = answers.filter(a => a === 'for').length;
+            const decidedCount = answers.filter(a => a === 'for' || a === 'against').length;
+            const percentage = decidedCount > 0 ? Math.round((forCount / decidedCount) * 100) : 0;
+            const agreedQuestions = questions
+                .map((q, i) => answers[i] === 'for' ? `${i + 1}. ${q.text} (${q.benefit})` : null)
+                .filter(Boolean)
+                .join('\n');
+            const subject = 'Your Political Bias Quiz Results';
+            const body = `You agree with ${percentage}% of President Trump's achievements in his first and second term so far.\n\nQuestions you agreed with:\n${agreedQuestions || 'None'}`;
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         }
 
         render();
